@@ -11,10 +11,16 @@ import {
   blogs,
   instagramProfileUrl,
   instagramPosts,
+  formspreeEndpoint,
 } from "./data/content";
 
 export default function App() {
   const [open, setOpen] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [emailAddr, setEmailAddr] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [subscribeMessage, setSubscribeMessage] = useState("");
   const galleryRef = useRef(null);
 
   const scrollGallery = (direction) => {
@@ -28,6 +34,19 @@ export default function App() {
       left: direction * Math.round(container.clientWidth * 0.9),
       behavior: "smooth",
     });
+  };
+
+  const scrollToSection = (e, id) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    // fallback: update the hash so the browser lands there
+    if (typeof window !== "undefined") {
+      window.location.hash = id;
+    }
   };
 
   useEffect(() => {
@@ -71,11 +90,12 @@ export default function App() {
             <Logo />
           </div>
 
-          <div className="glass rounded-2xl px-5 sm:px-8 py-3 flex items-center gap-4 sm:gap-8 overflow-x-auto">
+            <div className="glass rounded-2xl px-5 sm:px-8 py-3 flex items-center gap-4 sm:gap-8 overflow-x-auto">
             {navLinks.map((item) => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
+                onClick={(e) => scrollToSection(e, item.toLowerCase())}
                 className="text-[14px] sm:text-[16px] whitespace-nowrap text-white/80 hover:text-white font-semibold transition-colors duration-300"
               >
                 {item}
@@ -341,20 +361,20 @@ export default function App() {
                 <div>
                   <h3 className="text-sm uppercase tracking-wider text-white mb-4">Explore</h3>
                   <ul className="space-y-3 text-xs text-white/60">
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#announcements">Announcements</a></li>
-                    <li><a href="#blogs">Blogs</a></li>
-                    <li><a href="#gallery">Gallery</a></li>
+                    <li><a href="#about" onClick={(e) => scrollToSection(e, 'about')}>About</a></li>
+                    <li><a href="#announcements" onClick={(e) => scrollToSection(e, 'announcements')}>Announcements</a></li>
+                    <li><a href="#blogs" onClick={(e) => scrollToSection(e, 'blogs')}>Blogs</a></li>
+                    <li><a href="#gallery" onClick={(e) => scrollToSection(e, 'gallery')}>Gallery</a></li>
                   </ul>
                 </div>
 
                 <div>
                   <h3 className="text-sm uppercase tracking-wider text-white mb-4">Work</h3>
                   <ul className="space-y-3 text-xs text-white/60">
-                    <li><a href="#education">Education</a></li>
-                    <li><a href="#experience">Experience</a></li>
-                    <li><a href="#projects">Projects</a></li>
-                    <li><a href="#projects">Supply Chain Management</a></li>
+                    <li><a href="#education" onClick={(e) => scrollToSection(e, 'education')}>Education</a></li>
+                    <li><a href="#experience" onClick={(e) => scrollToSection(e, 'experience')}>Experience</a></li>
+                    <li><a href="#projects" onClick={(e) => scrollToSection(e, 'projects')}>Projects</a></li>
+                    <li><a href="#projects" onClick={(e) => scrollToSection(e, 'projects')}>Supply Chain Management</a></li>
                   </ul>
                 </div>
 
@@ -391,11 +411,77 @@ export default function App() {
               <h3 className="text-2xl font-semibold mb-3">Subscribe</h3>
               <p className="text-white/55 text-sm leading-relaxed mb-8">Get notified about new projects, articles, announcements, and updates.</p>
 
-              <form className="space-y-4">
-                <input type="text" required placeholder="First Name *" className="glass w-full rounded-2xl px-5 py-4 bg-transparent outline-none placeholder:text-white/30" />
-                <input type="text" required placeholder="Last Name *" className="glass w-full rounded-2xl px-5 py-4 bg-transparent outline-none placeholder:text-white/30" />
-                <input type="email" placeholder="Email Address (Optional)" className="glass w-full rounded-2xl px-5 py-4 bg-transparent outline-none placeholder:text-white/30" />
-                <button type="submit" className="glass w-full rounded-2xl py-4 hover:bg-white/10 transition-all duration-300">Join the Journey</button>
+              <form
+                className="space-y-4"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setSubmitting(true);
+                  setSubscribeMessage("");
+
+                  try {
+                    const fd = new FormData();
+                    fd.append("firstName", firstName);
+                    fd.append("lastName", lastName);
+                    fd.append("email", emailAddr);
+
+                    const res = await fetch(formspreeEndpoint, {
+                      method: "POST",
+                      headers: { Accept: "application/json" },
+                      body: fd,
+                    });
+
+                    if (res.ok) {
+                      setSubscribeMessage("Thanks — we'll notify you shortly.");
+                      setFirstName("");
+                      setLastName("");
+                      setEmailAddr("");
+                      setTimeout(() => setOpen(false), 1200);
+                    } else {
+                      const data = await res.json().catch(() => null);
+                      setSubscribeMessage((data && data.error) || "Submission failed — please try again later.");
+                    }
+                  } catch (err) {
+                    setSubscribeMessage("Network error — please try again later.");
+                  } finally {
+                    setSubmitting(false);
+                  }
+                }}
+              >
+                <input
+                  type="text"
+                  required
+                  placeholder="First Name *"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="glass w-full rounded-2xl px-5 py-4 bg-transparent outline-none placeholder:text-white/30"
+                />
+
+                <input
+                  type="text"
+                  required
+                  placeholder="Last Name *"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="glass w-full rounded-2xl px-5 py-4 bg-transparent outline-none placeholder:text-white/30"
+                />
+
+                <input
+                  type="email"
+                  placeholder="Email Address (Optional)"
+                  value={emailAddr}
+                  onChange={(e) => setEmailAddr(e.target.value)}
+                  className="glass w-full rounded-2xl px-5 py-4 bg-transparent outline-none placeholder:text-white/30"
+                />
+
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="glass w-full rounded-2xl py-4 hover:bg-white/10 transition-all duration-300 disabled:opacity-50"
+                >
+                  {submitting ? "Sending..." : "Join the Journey"}
+                </button>
+
+                {subscribeMessage && <div className="text-sm text-white/80 mt-2">{subscribeMessage}</div>}
               </form>
             </div>
           </div>

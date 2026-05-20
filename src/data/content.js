@@ -124,3 +124,5 @@ export const blogs = [
       `Please paste the full blog content here.\n\nYou can include multiple paragraphs. This field will be rendered as the full blog when visiting /blog/weibull-aerospace`,
   },
 ];
+
+export const formspreeEndpoint = "https://formspree.io/f/mgoqogrk"; // Formspree form ID provided by user
