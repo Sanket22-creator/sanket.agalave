@@ -25,6 +25,17 @@ export default function BlogPost() {
         <h1 className="text-3xl sm:text-4xl font-bold mb-4">{blog.title}</h1>
         <div className="text-sm text-white/60 mb-8">{blog.category}</div>
 
+        {blog.externalUrl && (
+          <a
+            href={blog.externalUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center rounded-2xl px-5 py-3 glass text-sm text-white/80 hover:text-white transition-colors mb-8"
+          >
+            Read Original Post ↗
+          </a>
+        )}
+
         <article className="prose prose-invert max-w-none text-white/90">
           {blog.fullContent.split("\n\n").map((para, i) => (
             <p key={i}>{para}</p>

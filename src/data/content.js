@@ -19,6 +19,7 @@ export const roles = [
 ];
 
 export const announcements = [
+  "Published: AI is the Reckless Intern, You Are Still the Tech Lead: Curing Engineer Anxiety",
   "Working on portfolio V2 architecture",
   "Exploring Weibull-based aerospace reliability systems",
   "Building manufacturing systems case studies",
@@ -112,6 +113,17 @@ export const instagramPosts = [
 ];
 
 export const blogs = [
+  {
+    id: "ai-reckless-intern-tech-lead",
+    title: "AI is the Reckless Intern, You Are Still the Tech Lead: Curing Engineer Anxiety",
+    category: "Engineering Leadership",
+    externalUrl:
+      "https://chainofthought22.blogspot.com/2026/05/ai-is-reckless-intern-you-are-still.html?m=1",
+    excerpt:
+      "A practical perspective on using AI without surrendering engineering judgment, responsibility, or calm under pressure.",
+    fullContent:
+      `This article explores how engineers can use AI as a fast helper without handing over ownership, verification, or accountability.\n\nRead the original post here: https://chainofthought22.blogspot.com/2026/05/ai-is-reckless-intern-you-are-still.html`,
+  },
   {
     id: "weibull-aerospace",
     title: "From Reactive to Predictive: Weibull-Based Aerospace Reliability Systems",

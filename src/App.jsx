@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import Logo from "./components/Logo";
 import { asset } from "./utils/asset";
 import {
@@ -127,8 +128,8 @@ export default function App() {
             </p>
 
             <div className="flex items-center gap-3 flex-wrap">
-              <a href="#projects" className="glass rounded-full px-5 py-3 text-[13px] hover:bg-white/10 transition-all duration-300">View Projects ↗</a>
-              <a href="#blogs" className="glass rounded-full px-5 py-3 text-[13px] hover:bg-white/10 transition-all duration-300">Read Blogs ↗</a>
+              <a href="#projects" onClick={(e) => scrollToSection(e, "projects")} className="glass rounded-full px-5 py-3 text-[13px] hover:bg-white/10 transition-all duration-300">View Projects ↗</a>
+              <a href="#blogs" onClick={(e) => scrollToSection(e, "blogs")} className="glass rounded-full px-5 py-3 text-[13px] hover:bg-white/10 transition-all duration-300">Read Blogs ↗</a>
             </div>
           </div>
         </section>
@@ -225,22 +226,27 @@ export default function App() {
           <div className="max-w-7xl mx-auto px-6 sm:px-12 md:px-20 lg:px-28 py-28">
             <span className="text-[13px] sm:text-[14px] uppercase tracking-[0.25em] text-blue-200 font-semibold">Blogs</span>
 
-            <a
-              href={blogs[0]?.externalUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="block glass rounded-3xl p-10 mt-10 hover:bg-white/5 transition-colors"
-            >
-              <div className="text-[12px] text-blue-200 mb-5">Aerospace Reliability Systems</div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-10">
+              {blogs.map((blog) => (
+                <Link
+                  key={blog.id}
+                  to={`/blog/${blog.id}`}
+                  className="block glass rounded-3xl p-10 hover:bg-white/5 transition-colors"
+                >
+                  <div className="text-[12px] text-blue-200 mb-5">{blog.category}</div>
 
-              <h3 className="text-[2rem] sm:text-[2.8rem] leading-[1.05] font-semibold max-w-3xl mb-6">From Reactive to Predictive: <br /> Weibull-Based Aerospace Reliability Systems</h3>
+                  <h3 className="text-[2rem] sm:text-[2.4rem] leading-[1.05] font-semibold max-w-3xl mb-6">
+                    {blog.title}
+                  </h3>
 
-              <p className="text-white/60 max-w-2xl leading-relaxed mb-8">Exploring predictive maintenance systems and Weibull-based reliability models in aerospace operations and lifecycle engineering.</p>
+                  <p className="text-white/60 max-w-2xl leading-relaxed mb-8">{blog.excerpt}</p>
 
-              <div className="inline-flex items-center rounded-2xl px-5 py-4 glass text-sm text-white/80 hover:text-white transition-colors">
-                Open Full Blog ↗
-              </div>
-            </a>
+                  <div className="inline-flex items-center rounded-2xl px-5 py-4 glass text-sm text-white/80 hover:text-white transition-colors">
+                    Open Blog Detail ↗
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
 
