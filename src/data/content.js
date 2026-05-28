@@ -19,6 +19,7 @@ export const roles = [
 ];
 
 export const announcements = [
+  "Published: Why Supply Chain Resilience Matters More Than Ever in the Oil & Gas Industry",
   "Published: AI is the Reckless Intern, You Are Still the Tech Lead: Curing Engineer Anxiety",
   "Working on portfolio V2 architecture",
   "Exploring Weibull-based aerospace reliability systems",
@@ -113,6 +114,17 @@ export const instagramPosts = [
 ];
 
 export const blogs = [
+  {
+    id: "supply-chain-resilience-oil-gas",
+    title: "Why Supply Chain Resilience Matters More Than Ever in the Oil & Gas Industry",
+    category: "Supply Chain Strategy",
+    externalUrl:
+      "https://chainofthought22.blogspot.com/2026/05/3-why-supply-chain-resilience-matters.html?m=1",
+    excerpt:
+      "Exploring the critical importance of supply chain resilience and its impact on operational stability in oil and gas operations.",
+    fullContent:
+      `Supply chain resilience is no longer optional in the oil & gas industry—it's essential for survival.\n\nThis article examines why robust, flexible supply chains are crucial for maintaining operations in volatile markets.\n\nRead the original post here: https://chainofthought22.blogspot.com/2026/05/3-why-supply-chain-resilience-matters.html`,
+  },
   {
     id: "ai-reckless-intern-tech-lead",
     title: "AI is the Reckless Intern, You Are Still the Tech Lead: Curing Engineer Anxiety",
