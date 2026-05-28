@@ -18,25 +18,25 @@ export default function BlogPost() {
   }
 
   return (
-    <main className="min-h-screen p-10 bg-black text-white">
+    <main className="min-h-screen p-6 sm:p-10 bg-black text-white">
       <div className="max-w-3xl mx-auto">
-        <Link to="/" className="text-blue-300 mb-6 inline-block">← Back</Link>
+        <Link to="/" className="text-blue-300 mb-8 inline-block hover:text-blue-200 transition-colors">← Back to Portfolio</Link>
 
-        <h1 className="text-3xl sm:text-4xl font-bold mb-4">{blog.title}</h1>
-        <div className="text-sm text-white/60 mb-8">{blog.category}</div>
+        <h1 className="text-3xl sm:text-5xl font-bold mb-4 leading-tight text-white">{blog.title}</h1>
+        <div className="text-sm sm:text-base text-white/70 mb-8 font-medium">{blog.category}</div>
 
         {blog.externalUrl && (
           <a
             href={blog.externalUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center rounded-2xl px-5 py-3 glass text-sm text-white/80 hover:text-white transition-colors mb-8"
+            className="inline-flex items-center rounded-2xl px-5 py-3 glass text-sm sm:text-base text-white/85 hover:text-white transition-colors mb-10 font-medium"
           >
             Read Original Post ↗
           </a>
         )}
 
-        <article className="prose prose-invert max-w-none text-white/90">
+        <article className="blog-content">
           {blog.fullContent.split("\n\n").map((para, i) => (
             <p key={i}>{para}</p>
           ))}

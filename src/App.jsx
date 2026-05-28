@@ -123,7 +123,7 @@ export default function App() {
 
             <h2 className="text-[1.2rem] sm:text-[1.5rem] font-medium leading-[1.3] mb-5">Engineering That Solves Problems</h2>
 
-            <p className="text-[14px] leading-relaxed text-white/60 max-w-md mb-8">
+            <p className="text-[14px] sm:text-[16px] leading-relaxed text-white/80 max-w-md mb-8">
               Exploring manufacturing systems, operational intelligence, supply chains, and digital transformation through research, engineering, and strategic thinking.
             </p>
 
@@ -146,9 +146,9 @@ export default function App() {
               <div>
                 <h2 className="text-[2rem] sm:text-[2.8rem] leading-[1.05] font-semibold mb-8">Engineering systems with a focus on operational resilience, reliability, and intelligent decision-making.</h2>
 
-                <p className="text-white/65 leading-relaxed mb-6">I am currently pursuing a Master’s in Strategic Management in Logistics in Berlin while working across engineering and operational systems.</p>
+                <p className="text-white/80 leading-relaxed mb-6 text-sm sm:text-base">I am currently pursuing a Master's in Strategic Management in Logistics in Berlin while working across engineering and operational systems.</p>
 
-                <p className="text-white/45 leading-relaxed mb-10">My interests lie in manufacturing systems, safety engineering, process optimization, and resilient supply chains.</p>
+                <p className="text-white/75 leading-relaxed mb-10 text-sm sm:text-base">My interests lie in manufacturing systems, safety engineering, process optimization, and resilient supply chains.</p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {["Manufacturing Systems", "Safety & Reliability Engineering", "Supply Chain Strategy", "Digital Transformation"].map((item) => (
@@ -168,7 +168,7 @@ export default function App() {
 
             <div className="mt-10 space-y-4">
               {announcements.map((item) => (
-                <div key={item} className="glass rounded-2xl px-6 py-5 text-white/75">{item}</div>
+                <div key={item} className="glass rounded-2xl px-6 py-5 text-white/85 text-sm sm:text-base leading-relaxed">{item}</div>
               ))}
             </div>
           </div>
@@ -231,17 +231,17 @@ export default function App() {
                 <Link
                   key={blog.id}
                   to={`/blog/${blog.id}`}
-                  className="block glass rounded-3xl p-10 hover:bg-white/5 transition-colors"
+                  className="block glass rounded-3xl p-8 sm:p-10 hover:bg-white/5 transition-colors"
                 >
-                  <div className="text-[12px] text-blue-200 mb-5">{blog.category}</div>
+                  <div className="text-[12px] sm:text-[13px] text-blue-300 mb-5 font-medium">{blog.category}</div>
 
-                  <h3 className="text-[2rem] sm:text-[2.4rem] leading-[1.05] font-semibold max-w-3xl mb-6">
+                  <h3 className="text-[1.5rem] sm:text-[2rem] md:text-[2.2rem] leading-[1.2] font-semibold max-w-3xl mb-6 text-white">
                     {blog.title}
                   </h3>
 
-                  <p className="text-white/60 max-w-2xl leading-relaxed mb-8">{blog.excerpt}</p>
+                  <p className="text-white/80 max-w-2xl leading-relaxed mb-8 text-sm sm:text-base">{blog.excerpt}</p>
 
-                  <div className="inline-flex items-center rounded-2xl px-5 py-4 glass text-sm text-white/80 hover:text-white transition-colors">
+                  <div className="inline-flex items-center rounded-2xl px-5 py-3 sm:py-4 glass text-sm sm:text-base text-white/85 hover:text-white transition-colors font-medium">
                     Open Blog Detail ↗
                   </div>
                 </Link>
