@@ -8,7 +8,12 @@ const Groq = require("groq-sdk");
 
 const app = express();
 
-app.use(cors());
+// Enable CORS for all origins
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type"],
+}));
 app.use(express.json());
 
 const groq = new Groq({
