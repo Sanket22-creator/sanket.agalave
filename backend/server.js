@@ -8,12 +8,19 @@ const Groq = require("groq-sdk");
 
 const app = express();
 
-// Enable CORS for all origins
-app.use(cors({
-  origin: "*",
+// CORS middleware - enable for all origins
+const corsOptions = {
+  origin: function(origin, callback) {
+    callback(null, true); // Allow all origins
+  },
   methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type"],
-}));
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: false,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // Handle preflight requests
 app.use(express.json());
 
 const groq = new Groq({
