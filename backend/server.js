@@ -1,4 +1,6 @@
 require("dotenv").config();
+console.log("GROQ_API_KEY exists:", !!process.env.GROQ_API_KEY);
+console.log("Documents loaded:", documents?.length || "not loaded");
 
 const express = require("express");
 const cors = require("cors");
@@ -28,6 +30,8 @@ const documents = JSON.parse(
     "utf8"
   )
 );
+console.log("Documents loaded:", documents.length);
+console.log("GROQ_API_KEY exists:", !!process.env.GROQ_API_KEY);
 
 app.get("/", (req, res) => {
   res.send("Sanket AI Backend Running");
