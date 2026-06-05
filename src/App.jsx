@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Logo from "./components/Logo";
+import ChatWidget from "./components/ChatWidget";
 import { asset } from "./utils/asset";
 import {
   navLinks,
@@ -492,6 +493,9 @@ export default function App() {
             </div>
           </div>
         )}
+
+        {/* Recruiter Chatbot */}
+        <ChatWidget />
       </div>
     </main>
   );
