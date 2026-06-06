@@ -9,6 +9,10 @@ const SUGGESTED_QUESTIONS = [
   "Tell me about Sanket's experience at Infosys.",
 ];
 
+const CHAT_API_URL =
+  import.meta.env.VITE_CHAT_API_URL ||
+  "https://sanketagalave-production.up.railway.app";
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -45,7 +49,7 @@ export default function ChatWidget() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("https://sanketagalave-production.up.railway.app/ask", {
+      const response = await fetch(`${CHAT_API_URL}/ask`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

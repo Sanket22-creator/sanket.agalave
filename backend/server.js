@@ -10,13 +10,14 @@ const Groq = require("groq-sdk");
 
 const app = express();
 
-// CORS middleware - must be first
-app.use(cors({
-  origin: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type'],
-  credentials: false
-}));
+app.use(
+  cors({
+    origin: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type"],
+    credentials: false,
+  })
+);
 
 app.use(express.json());
 
@@ -25,16 +26,64 @@ const groq = new Groq({
 });
 
 const documents = JSON.parse(
-  fs.readFileSync(
-    path.join(__dirname, "data", "documents.json"),
-    "utf8"
-  )
+  fs.readFileSync(path.join(__dirname, "data", "documents.json"), "utf8")
 );
 console.log("Documents loaded:", documents.length);
 console.log("GROQ_API_KEY exists:", !!process.env.GROQ_API_KEY);
 
+function scoreDocuments(question) {
+  const keywords = question
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((word) => word.length > 3);
+
+  return documents
+    .map((doc) => {
+      const text = String(doc.text || "").toLowerCase();
+      let score = 0;
+
+      keywords.forEach((keyword) => {
+        if (text.includes(keyword)) {
+          score += 1;
+        }
+      });
+
+      return { ...doc, score };
+    })
+    .filter((doc) => doc.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10);
+}
+
+function buildFallbackAnswer(question, relevantDocs) {
+  const snippets = relevantDocs
+    .slice(0, 3)
+    .flatMap((doc) =>
+      String(doc.text || "")
+        .split(/(?<=[.!?])\s+/)
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .slice(0, 2)
+    )
+    .slice(0, 6);
+
+  if (!snippets.length) {
+    return "I could not find enough matching profile information for that question.";
+  }
+
+  return [
+    `I found related profile information for: "${question}"`,
+    "",
+    ...snippets.map((line) => `- ${line}`),
+  ].join("\n");
+}
+
 app.get("/", (req, res) => {
   res.send("Sanket AI Backend Running");
+});
+
+app.get("/health", (req, res) => {
+  res.json({ ok: true });
 });
 
 app.post("/ask", async (req, res) => {
@@ -47,35 +96,13 @@ app.post("/ask", async (req, res) => {
       });
     }
 
-    const keywords = question
-      .toLowerCase()
-      .split(/\s+/)
-      .filter(word => word.length > 3);
+    const relevantDocs = scoreDocuments(question);
+    const fallbackAnswer = buildFallbackAnswer(question, relevantDocs);
+    const context = relevantDocs.map((doc) => String(doc.text || "").substring(0, 3000)).join("\n\n");
 
-    const relevantDocs = documents
-      .map(doc => {
-        let score = 0;
-
-        keywords.forEach(keyword => {
-          if (doc.text.toLowerCase().includes(keyword)) {
-            score++;
-          }
-        });
-
-        return { ...doc, score };
-      })
-      .filter(doc => doc.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 10);
-
-    console.log(
-      "Selected docs:",
-      relevantDocs.map(d => d.file)
-    );
-
-    const context = relevantDocs
-      .map((d) => d.text.substring(0, 3000))
-      .join("\n\n");
+    if (!process.env.GROQ_API_KEY) {
+      return res.json({ answer: fallbackAnswer });
+    }
 
     const completion = await groq.chat.completions.create({
       model: "llama-3.3-70b-versatile",
@@ -102,7 +129,7 @@ Rules:
 - Speak confidently when the information exists.
 - If information is missing, say "I could not find evidence of that in Sanket's profile."
 - Focus on business value and achievements.
-`
+`,
         },
         {
           role: "user",
@@ -112,8 +139,8 @@ ${question}
 
 Knowledge Base:
 ${context}
-`
-        }
+`,
+        },
       ],
       temperature: 0.2,
     });
@@ -121,11 +148,12 @@ ${context}
     res.json({
       answer: completion.choices[0].message.content,
     });
-
   } catch (error) {
     console.error(error);
 
-    res.status(500).json({
+    res.json({
+      answer:
+        "I’m having trouble reaching the AI provider right now, but the chatbox is still available with profile-based fallback answers.",
       error: error.message,
     });
   }
@@ -139,7 +167,7 @@ app.get("/ask-test", async (req, res) => {
   }
 
   res.json({
-    question
+    question,
   });
 });
 
