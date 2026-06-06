@@ -13,6 +13,15 @@ const CHAT_API_URL =
   import.meta.env.VITE_CHAT_API_URL ||
   "https://sanketagalave-production.up.railway.app";
 
+async function readErrorMessage(response) {
+  try {
+    const data = await response.json();
+    return data?.error || data?.message || response.statusText || "Unknown API error";
+  } catch {
+    return response.statusText || "Unknown API error";
+  }
+}
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -58,7 +67,10 @@ export default function ChatWidget() {
       });
 
       if (!response.ok) {
-        throw new Error(`API error: ${response.statusText}`);
+        const apiMessage = await readErrorMessage(response);
+        throw new Error(
+          `API error (${response.status}): ${apiMessage}. Check the Railway backend URL, CORS, and Groq key.`
+        );
       }
 
       const data = await response.json();
@@ -73,7 +85,7 @@ export default function ChatWidget() {
       setError(err.message);
       const errorMessage = {
         id: messages.length + 2,
-        text: `Sorry, I encountered an error: ${err.message}. Please try again.`,
+        text: `Sorry, I encountered an error. ${err.message}`,
         isUser: false,
       };
       setMessages((prev) => [...prev, errorMessage]);
