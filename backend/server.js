@@ -20,9 +20,11 @@ app.options(/.*/, cors());
 
 app.use(express.json());
 
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
+const groq = process.env.GROQ_API_KEY
+  ? new Groq({
+      apiKey: process.env.GROQ_API_KEY,
+    })
+  : null;
 
 const documents = JSON.parse(
   fs.readFileSync(path.join(__dirname, "data", "documents.json"), "utf8")
@@ -97,7 +99,7 @@ app.post("/ask", async (req, res) => {
     const fallbackAnswer = buildFallbackAnswer(question, relevantDocs);
     const context = relevantDocs.map((doc) => String(doc.text || "").substring(0, 3000)).join("\n\n");
 
-    if (!process.env.GROQ_API_KEY) {
+    if (!groq) {
       return res.json({ answer: fallbackAnswer });
     }
 
