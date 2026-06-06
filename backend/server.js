@@ -1,6 +1,4 @@
 require("dotenv").config();
-console.log("GROQ_API_KEY exists:", !!process.env.GROQ_API_KEY);
-console.log("Documents loaded:", documents?.length || "not loaded");
 
 const express = require("express");
 const cors = require("cors");
@@ -18,6 +16,7 @@ app.use(
     credentials: false,
   })
 );
+app.options("*", cors());
 
 app.use(express.json());
 
@@ -28,8 +27,6 @@ const groq = new Groq({
 const documents = JSON.parse(
   fs.readFileSync(path.join(__dirname, "data", "documents.json"), "utf8")
 );
-console.log("Documents loaded:", documents.length);
-console.log("GROQ_API_KEY exists:", !!process.env.GROQ_API_KEY);
 
 function scoreDocuments(question) {
   const keywords = question
